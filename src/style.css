@@ -1,0 +1,93 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: "Twilio Sans Mono";
+  padding: 20px 20px;
+}
+
+code {
+  white-space: pre;
+  display: block;
+  margin-bottom: 20px;
+  background-color: rgb(25, 25, 30);
+  padding: 20px;
+  border: 3px solid rgb(105,105,105);
+}
+
+code>h3 {
+  color: #AAA;
+  margin: 0px;
+  margin-bottom: 10px;
+}
+
+.tests {
+  border: solid 3px white;
+  padding: 15px;
+}
+
+.tests>div {
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 10px;
+}
+
+h2 {
+  padding-left: 15px;
+  padding-top: 20px;
+  border-top: solid 1px rgb(64,64,64);
+}
+
+h2>a {
+  color: white;
+  text-decoration: none;
+}
+h2>a:hover {
+  text-decoration: underline;
+}
+.tests>div>a.output {
+  margin-top: 10px;
+  background-color: rgb(15,15,15);
+  padding: 10px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  border: 3px solid rgb(185,185,185);
+}
+
+h1 {
+  text-align: center;
+}
+
+button {
+  background: white;
+  border: none;
+  outline: none;
+  font-family: "Twilio Sans Mono";
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+  border: 1px solid black;
+  padding: 5px 10px;
+}
+
+button:hover {
+  font-style: italic;
+  transition: 100ms;
+  border: 1px solid white;
+}
+
+button:hover:active {
+  transform: scale(1.05);
+  transition: 100ms;
+}
+
+.output, .output * {
+  background-color: inherit;
+  animation: mymove 0.5s ease ;
+}
+
+@keyframes mymove {
+  from {background-color: rgba(255,255,255,0.5);}
+  to {background-color: inherit;}
+}
