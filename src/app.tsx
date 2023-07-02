@@ -29,11 +29,11 @@ export function main() {
     $new($_(() => $.worldEmoji + "... copycat")).reflected;
   }
 
-    $new([
-      <span>fireEmoji: {$.fireEmoji} | </span>,
-      <span>worldEmoji: {$.worldEmoji}</span>,
-    ]).arr;
-  
+  $new([
+    <span>fireEmoji: {$.fireEmoji} | </span>,
+    <span>worldEmoji: {$.worldEmoji}</span>,
+  ]).arr;
+
   create_reflected();
   app = (
     <div class="tests">
@@ -44,16 +44,16 @@ export function main() {
       </p>
       <p>
         This library attempts to match the syntax and experience of writing
-        plain vanilla JS. No need for functions to set values, access them
-        like you would any other variable :)
+        plain vanilla JS. No need for functions to set values, access them like
+        you would any other variable :)
       </p>
       <h2 id="basics">
         <a href="#basics"># Basics</a>
       </h2>
       <div>
         <p>Create and change a reactive value using the “$” syntax.</p>
-        {render_code("javascript", create_change.toString())}
-        {render_code("jsx", <a>{`{$.worldEmoji}`}</a>)}
+        {render_code("html", `<body><reactive-app></reactive-app></body>`)}
+        {render_code("jsx", create_change.toString() + "\n\n app = " + (<a class="output">{`{$.worldEmoji}`}</a> as HTMLElement).outerHTML)}
         <h3>Output</h3>
         <a class="output">{$.worldEmoji}</a>
       </div>
@@ -67,7 +67,7 @@ export function main() {
         </p>
         {render_code(
           "jsx",
-          `$_(() => ($.worldEmoji == "🌏" ? "Yes!" : "nope :("))`
+          `app = <a class="output">$_(() => ($.worldEmoji == "🌏" ? "Yes!" : "nope :("))</a>`
         )}
         <h3>Output</h3>
         <a class="output">
@@ -86,7 +86,8 @@ export function main() {
         </p>
         {render_code(
           "jsx",
-          create_reflected.toString() + ` \n\n<button onclick={() => { $.reflected = "my new value!";}}>
+          create_reflected.toString() +
+            ` \n\n<button onclick={() => { $.reflected = "my new value!";}}>
   Change the value!
 </button>`
         )}
@@ -109,11 +110,14 @@ export function main() {
           will actually create a placeholder variable in case it gets set in the
           future.
         </p>
-        {render_code("jsx", `<button onclick={() => {$.test = "hey, I'm defined!";}}>
+        {render_code(
+          "jsx",
+          `<button onclick={() => {$.test = "hey, I'm defined!";}}>
   Define it!
 </button>
 
-<a class="output">{$.test}</a>`)}
+<a class="output">{$.test}</a>`
+        )}
         <button
           onclick={() => {
             $.test = "hey, I'm defined!";
@@ -129,13 +133,16 @@ export function main() {
       </h2>
       <div>
         <p>And of course, arrays of JSX function how you'd expect.</p>
-        {render_code("jsx", `$new([
+        {render_code(
+          "jsx",
+          `$new([
   <span>fireEmoji: {$.fireEmoji} | </span>,
   <span>worldEmoji: {$.worldEmoji}</span>,
 ]).arr;
 
 <a class="output">{$.arr}</a>
-`)}
+`
+        )}
         <h3>Output</h3>
         <a class="output">{$.arr}</a>
       </div>
@@ -146,7 +153,10 @@ export function main() {
         <li>Scoped reactive variables (currently all are global)</li>
         <li>Cleaning up out of scope/ unused variables</li>
         <li>Support variable methods (e.g. array.pop())</li>
-        <li>Maybe possible to get rid of $new? Just use $.[var_name] for everything</li>
+        <li>
+          Maybe possible to get rid of $new? Just use $.[var_name] for
+          everything
+        </li>
         <li>Full typesafety</li>
       </ul>
     </div>
