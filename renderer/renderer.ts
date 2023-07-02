@@ -246,7 +246,7 @@ export function $new(input: any) {
       target[p] = out;
       // This is for reflected values
       if(input.__reactive_id) {
-        const [k, _] = Object.entries(target).find(([k,v] )=> v.__reactive_id == input.__reactive_id);
+        const [k, _] = Object.entries(target).find(([_,v] )=> v.__reactive_id == input.__reactive_id);
         if(k.startsWith("__anonymous_")) {
           target[p].__reactive_id = target[k].__reactive_id
           delete target[k];
