@@ -7,7 +7,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'renderer': path.resolve(__dirname, './renderer/renderer')
+      'renderer': path.resolve(__dirname, './renderer/')
     }
   }
 })

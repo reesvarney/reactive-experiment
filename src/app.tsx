@@ -1,40 +1,34 @@
-//@ts-ignore
-import { $new, $, $_, __jsx } from "renderer";
+import { $, $_, __jsx } from "renderer/__reactive_renderer";
 import "./style.css";
 import hljs from "highlight.js";
 import "highlight.js/styles/github-dark.css";
-function render_code(lang: string, el: HTMLElement | string) {
+function render_code(lang: string, el: string) {
   // return hljs.highlight(el, {language: lang});
   const container: HTMLElement = <code></code>;
-  container.innerHTML = hljs.highlight(
-    typeof el == "string" ? el : el.outerHTML,
-    { language: lang }
-  ).value;
+  container.innerHTML = hljs.highlight(el.trim(), { language: lang }).value;
   container.prepend(<h3>// {lang}</h3>);
   return container;
 }
 
 export function main() {
-  function create_change() {
-    $new("🌏").worldEmoji;
-    const planets = ["🌕", "🪐", "☀️", "☄️", "🌏"];
-    setInterval(() => {
-      $.worldEmoji = planets[0];
-      planets.push(planets.shift());
-    }, 2000);
-  }
-  $new("🔥").fireEmoji;
-  create_change();
-  function create_reflected() {
-    $new($_(() => $.worldEmoji + "... copycat")).reflected;
-  }
+  $.worldEmoji = "🌏";
+  const planets = ["🌕", "🪐", "☀️", "☄️", "🌏"];
+  setInterval(() => {
+    $.worldEmoji = planets[0];
+    planets.push(planets.shift());
+  }, 2000);
 
-  $new([
-    <span>fireEmoji: {$.fireEmoji} | </span>,
+  $.fireEmoji = "🔥";
+  $.reflected = $_(() => $.worldEmoji + "... copycat");
+  $.arr = [
+    <span>fireEmoji: {$.fireEmoji}</span>,
+    <span> | </span>,
     <span>worldEmoji: {$.worldEmoji}</span>,
-  ]).arr;
+  ];
+  $.arr2 = [
+    1,2,3,4,5,6
+  ]
 
-  create_reflected();
   app = (
     <div class="tests">
       <h1>Reactivity Demo</h1>
@@ -53,7 +47,19 @@ export function main() {
       <div>
         <p>Create and change a reactive value using the “$” syntax.</p>
         {render_code("html", `<body><reactive-app></reactive-app></body>`)}
-        {render_code("jsx", create_change.toString() + "\n\n app = " + (<a class="output">{`{$.worldEmoji}`}</a> as HTMLElement).outerHTML)}
+        {render_code(
+          "jsx",
+          `
+$.worldEmoji = "🌏";
+const planets = ["🌕", "🪐", "☀️", "☄️", "🌏"];
+setInterval(() => {
+  $.worldEmoji = planets[0];
+  planets.push(planets.shift());
+}, 2000);
+
+app = <a class="output">$.worldEmoji</a>
+          `
+        )}
         <h3>Output</h3>
         <a class="output">{$.worldEmoji}</a>
       </div>
@@ -65,6 +71,10 @@ export function main() {
           It's easy to have complex expressions that will be re-evaluated
           whenever one of the used values is updated.
         </p>
+        <p>
+          (Note: Currently this may only work for variables that are accessed on the initial evaluation, so they may not work if they are behind an if statement.)
+        </p>
+        <p>You can work around this by simply referencing any variables at the start of the function to make sure they are included.</p>
         {render_code(
           "jsx",
           `app = <a class="output">$_(() => ($.worldEmoji == "🌏" ? "Yes!" : "nope :("))</a>`
@@ -86,10 +96,16 @@ export function main() {
         </p>
         {render_code(
           "jsx",
-          create_reflected.toString() +
-            ` \n\n<button onclick={() => { $.reflected = "my new value!";}}>
-  Change the value!
-</button>`
+          `
+$.reflected = $_(() => $.worldEmoji + "... copycat");
+
+app = <div>
+  <button onclick={() => { $.reflected = "my new value!";}}>
+    Change the value!
+  </button>
+  <a class="output">{$.reflected}</a>
+</div>
+`
         )}
         <button
           onclick={() => {
@@ -112,11 +128,14 @@ export function main() {
         </p>
         {render_code(
           "jsx",
-          `<button onclick={() => {$.test = "hey, I'm defined!";}}>
-  Define it!
-</button>
-
-<a class="output">{$.test}</a>`
+          `
+app = <div>
+  <button onclick={() => {$.test = "hey, I'm defined!";}}>
+    Define it!
+  </button>
+  <a class="output">{$.test}</a>
+</div>
+`
         )}
         <button
           onclick={() => {
@@ -135,29 +154,40 @@ export function main() {
         <p>And of course, arrays of JSX function how you'd expect.</p>
         {render_code(
           "jsx",
-          `$new([
+          `
+$.arr = [
   <span>fireEmoji: {$.fireEmoji} | </span>,
   <span>worldEmoji: {$.worldEmoji}</span>,
-]).arr;
+];
 
-<a class="output">{$.arr}</a>
+app = <a class="output">{$.arr}</a>
 `
         )}
+                <p>It even supports mutations!</p>
+        {render_code("jsx", `
+        <button onclick={()=>{$.arr.pop()}}>Pop!</button>
+        
+        `)}
+        <button onclick={()=>{$.arr.pop()}}>Pop!</button>
         <h3>Output</h3>
-        <a class="output">{$.arr}</a>
+        {/* This breaks as JSX is a reference to an element, ig would need to detect if a Node already exists in the document and if so, duplicate it, but this could de-couple it from the data? */}
+        <a class="output">{$.arr2[2]}</a>
+        <a class="output">{$.arr2}</a>
       </div>
       <h2 id="missing_features">
-        <a href="#missing_features"># Yet to be added</a>
+        <a href="#missing_features"># Issues</a>
       </h2>
       <ul>
-        <li>Scoped reactive variables (currently all are global)</li>
         <li>Cleaning up out of scope/ unused variables</li>
-        <li>Support variable methods (e.g. array.pop())</li>
+        <li>Variable scope</li>
+        <li>Full typesafety, type is currently lost due to the proxy</li>
         <li>
-          Maybe possible to get rid of $new? Just use $.[var_name] for
-          everything
+          Optimise different use cases, might be better to not always re-render
+          the element
         </li>
-        <li>Full typesafety</li>
+        <li>Implement data based arrays, if an array element is updated only the corresponding html should be, not everything accessing the array</li>
+        <li>Somehow accessing an individual property stops other places from accessing that property, at least when it is JSX</li>
+        <li>Maybe functions could directly be converted to reactive funcs</li>
       </ul>
     </div>
   );
