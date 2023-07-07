@@ -26,7 +26,7 @@ export function main() {
     <span>worldEmoji: {$.worldEmoji}</span>,
   ];
   $.arr2 = [
-    1,2,3,4,5,6
+    1,<span>hey</span>,2,3,4,5,6, <span>hey</span>
   ]
 
   app = (
@@ -168,7 +168,7 @@ app = <a class="output">{$.arr}</a>
         <button onclick={()=>{$.arr.pop()}}>Pop!</button>
         
         `)}
-        <button onclick={()=>{$.arr.pop()}}>Pop!</button>
+        <button onclick={()=>{$.arr2.pop()}}>Pop!</button>
         <h3>Output</h3>
         {/* This breaks as JSX is a reference to an element, ig would need to detect if a Node already exists in the document and if so, duplicate it, but this could de-couple it from the data? */}
         <a class="output">{$.arr2[2]}</a>
@@ -191,4 +191,5 @@ app = <a class="output">{$.arr}</a>
       </ul>
     </div>
   );
+  $.arr2.push(<div>who</div>)
 }
